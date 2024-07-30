@@ -25,5 +25,24 @@
 # 
 # **Nombre Estudiante(s)**: `Giuseppe Lavarello`
 
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
+import missingno as msno
+
+
+df = pd.read_csv("..\\data\\raw\\winequality-white.csv", sep=";")
+
+
+df.sample(10)
+
+
+msno.matrix(df)
+
+
+df.dtypes
+
+
 
 
