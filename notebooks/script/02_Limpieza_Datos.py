@@ -39,6 +39,7 @@ import missingno as msno #de NaNs
 
 # Para la normalizacion de la data
 from sklearn.preprocessing import MinMaxScaler
+  
 
 
 # ##### Carga de Datos
@@ -165,4 +166,9 @@ for col in X_n:
         else percentil_90[col] if x > percentil_90[col] 
         else x))
 df1.describe()
+
+
+# ##### Exporte de la Data para siguiente notebook
+
+df1.to_csv(r'..\data\interim\wine_inter', index = False)
 
