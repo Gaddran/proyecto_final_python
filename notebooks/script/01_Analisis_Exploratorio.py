@@ -12,6 +12,7 @@
 # </div>
 # 
 # # Python para Data Science: Proyecto final
+# 
 # *15 de Julio de 2024*
 # 
 # **Fecha de Entrega**: 04 de Agosto de 2024
@@ -37,7 +38,6 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import missingno as msno #de NaNs
-
 
 
 # ##### Carga de Datos
