@@ -113,7 +113,7 @@ df1.describe()
 # Selecciona las columnas numéricas
 num_columns = df0.select_dtypes(include=np.number)
 
-#normalize values using min-max scaling
+# Normalisar valores usando min-max scaling
 scaler = MinMaxScaler()
 normalized_data = scaler.fit_transform(num_columns)
 
