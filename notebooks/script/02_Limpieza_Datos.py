@@ -49,8 +49,15 @@ from sklearn.preprocessing import MinMaxScaler
 df0 = pd.read_csv("..\\data\\raw\\winequality-white.csv", sep=";")
 
 
+# ##### Manejo de nombres
+
+# Remplazar los espacios en los nombres de las columnas
+
+df0.columns = df0.columns.str.replace(' ', '_')
+
+
 # 
-# ##### Data Faltante
+# ##### Data Faltante (NaNs)
 
 # checkeo de valores nulos
 df0.isna().sum()
@@ -121,7 +128,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# **Decisión**: Al parecer, todas las variables excepto las dos últimas presentan una gran cantidad de Outliers, por lo que serán estudiadas.
+# **Decisión**: Al parecer, todas las variables excepto las dos últimas presentan una gran cantidad de Outliers, por lo que tendran que ser estudiadas.
 # 
 
 # Determinar el número de filas que contienen valores atípicos para cada variable que necesita ser abordada
@@ -170,5 +177,5 @@ df1.describe()
 
 # ##### Exporte de la Data para siguiente notebook
 
-df1.to_csv(r'..\data\interim\wine_inter', index = False)
+df1.to_csv(r'..\data\interim\wine_inter01.csv', index = False)
 
