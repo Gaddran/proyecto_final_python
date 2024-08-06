@@ -28,7 +28,6 @@
 # ##### Importe de Paquetes
 
 # Para manipulación de data 
-from re import S
 import numpy as np
 import pandas as pd
 import scipy
@@ -36,6 +35,10 @@ import scipy
 # Para visualización de data
 from matplotlib import pyplot as plt
 import seaborn as sns
+import plotly.express as px
+
+# Para la normalizacion de la data
+from sklearn.preprocessing import MinMaxScaler
 
 sns.set_theme()
 
@@ -46,34 +49,10 @@ df0 = pd.read_csv(r'..\data\interim\wine_inter02.csv',index_col=0)
 df0.head()
 
 
-# En el siguiente grafico podemos ver las features con minimo efecto en la variable `quality`
-
-# Se grafican el efecto de las siguientes columnas ["volatile_acidity","citric_acid","chlorides","pH","density","sulphates"]
-plt.figure(figsize=(15,7))
-
-sns.lineplot(data=df0, x="quality",y="volatile_acidity",label="Volatile Acidity")
-sns.lineplot(data=df0, x="quality",y="citric_acid",label="Citric Acid")
-sns.lineplot(data=df0, x="quality",y="chlorides",label="Chlorides")
-sns.lineplot(data=df0, x="quality",y="pH",label="pH")
-sns.lineplot(data=df0, x="quality",y="density",label="density")
-sns.lineplot(data=df0, x="quality",y="sulphates",label="Sulphates")
-
-plt.ylabel("Cantidad")
-plt.title("Impacto en quality")
-plt.legend()
-plt.show()
-
-
-plt.figure(figsize=(15,7))
-sns.lineplot(data=df0, x="quality",y="alcohol",label="Alcohol")
-plt.ylabel("Cantidad")
-plt.title("Impacto del contenido de Alcohol en quality")
-plt.legend()
-plt.show()
-
+# ##### Distribución de las features
 
 def feat_plot(feature):
-    fig, ax= plt.subplots(1, 2, figsize=(16, 6))
+    fig, ax= plt.subplots(1, 2, figsize=(6, 3))
     sns.histplot(feature,ax=ax[0])
     sns.boxplot(feature,ax=ax[1], orient="h")
 
@@ -83,4 +62,66 @@ num_feat = df0.select_dtypes(exclude = 'object').drop(columns="quality")
 
 for i in num_feat.columns:
     feat_plot(num_feat[i])
+
+
+# ##### Correlacion y tendencia de la data
+# 
+# Se puede ver que para la variable `quality` presenta muy poca correlacion directa con la mayoria de las variables, lo cual se deja aun mas en claro con los graficos de Impacto
+
+plt.figure(figsize=(10,8))
+sns.heatmap(df0.corr(), annot=True, center=0)
+
+
+scaler = MinMaxScaler()
+normalized_data = scaler.fit_transform(df0)
+
+# Creamos un df con la data normalizada
+df0_normalized = pd.DataFrame(normalized_data, columns=df0.columns)
+
+
+# ##### Impacto de las features sobre la variable `quality`.
+# - Features de impacto no linear
+# 
+
+# Se grafican el efecto de las siguientes columnas ["volatile_acidity","citric_acid","chlorides","pH","density","sulphates"]
+plt.figure(figsize=(15,7))
+
+sns.lineplot(data=df0_normalized, x="quality",y="volatile_acidity",label="Volatile Acidity")
+sns.lineplot(data=df0_normalized, x="quality",y="fixed_acidity",label="Fixed acidity")
+sns.lineplot(data=df0_normalized, x="quality",y="citric_acid",label="Citric Acid")
+sns.lineplot(data=df0_normalized, x="quality",y="sulphates",label="Sulphates")
+
+plt.ylabel("Cantidad")
+plt.title("Impacto en quality")
+plt.legend()
+plt.show()
+
+
+# - Features de impacto positivo
+
+# Se grafican el efecto de las siguientes columnas ["volatile_acidity","citric_acid","chlorides","pH","density","sulphates"]
+plt.figure(figsize=(15,7))
+
+sns.lineplot(data=df0_normalized, x="quality",y="alcohol",label="Alcohol")
+sns.lineplot(data=df0_normalized, x="quality",y="pH",label="pH")
+
+plt.ylabel("Cantidad")
+plt.title("Impacto en quality")
+plt.legend()
+plt.show()
+
+
+# - Features de impacto negativo
+
+plt.figure(figsize=(15,7))
+
+sns.lineplot(data=df0_normalized, x="quality",y="residual_sugar",label="Residual sugar")
+sns.lineplot(data=df0_normalized, x="quality",y="fixed_sulfur_dioxide",label="Fixed sulfur dioxide")
+sns.lineplot(data=df0_normalized, x="quality",y="chlorides",label="Chlorides")
+sns.lineplot(data=df0_normalized, x="quality",y="density",label="Density")
+
+plt.ylabel("Cantidad")
+plt.title("Impacto del contenido de Alcohol en quality")
+plt.legend()
+plt.show()
 
