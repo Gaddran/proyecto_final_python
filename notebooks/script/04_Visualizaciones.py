@@ -54,7 +54,9 @@ df0.head()
 def feat_plot(feature):
     fig, ax= plt.subplots(1, 2, figsize=(6, 3))
     sns.histplot(feature,ax=ax[0])
+    ax[0].set_ylabel("Frecuencia")
     sns.boxplot(feature,ax=ax[1], orient="h")
+    fig.suptitle(f"Distribución de la variable {feature.name.replace("_"," ")}")
 
 
 num_feat = df0.select_dtypes(exclude = 'object').drop(columns="quality")
@@ -64,26 +66,41 @@ for i in num_feat.columns:
     feat_plot(num_feat[i])
 
 
-# ##### Correlacion y tendencia de la data
+# - Distribución de la variable objetivo
+
+fig, ax= plt.subplots(figsize=(10, 6))
+sns.histplot(df0.quality,ax=ax)
+ax.set_ylabel("Frecuencia")
+ax.set_title("Histograma de variable objetivo")
+plt.show()
+
+
+# ##### Correlación y tendencia de la data
 # 
-# Se puede ver que para la variable `quality` presenta muy poca correlacion directa con la mayoria de las variables, lo cual se deja aun mas en claro con los graficos de Impacto
+# Se puede ver que la variable `quality` presenta muy poca correlación directa con la mayoría de las variables, lo cual se deja aún más en claro con los gráficos de Impacto.
+# 
 
 plt.figure(figsize=(10,8))
 sns.heatmap(df0.corr(), annot=True, center=0)
 
 
+# Normalisar valores usando min-max scaling
 scaler = MinMaxScaler()
 normalized_data = scaler.fit_transform(df0)
 
-# Creamos un df con la data normalizada
+# Crear un df con la data normalizada
 df0_normalized = pd.DataFrame(normalized_data, columns=df0.columns)
+df0_normalized["quality"] = df0["quality"] # Pero manteniendo la columna objetivo
 
 
 # ##### Impacto de las features sobre la variable `quality`.
+# 
+# Estas visualizaciones permitirán entender más directamente el nivel de variación e impacto que tiene cada variable contra la variable objetivo.
+# 
 # - Features de impacto no linear
 # 
 
-# Se grafican el efecto de las siguientes columnas ["volatile_acidity","citric_acid","chlorides","pH","density","sulphates"]
+# Graficar el efecto de las siguientes columnas
 plt.figure(figsize=(15,7))
 
 sns.lineplot(data=df0_normalized, x="quality",y="volatile_acidity",label="Volatile Acidity")
@@ -99,7 +116,7 @@ plt.show()
 
 # - Features de impacto positivo
 
-# Se grafican el efecto de las siguientes columnas ["volatile_acidity","citric_acid","chlorides","pH","density","sulphates"]
+# Graficar el efecto de las siguientes columnas
 plt.figure(figsize=(15,7))
 
 sns.lineplot(data=df0_normalized, x="quality",y="alcohol",label="Alcohol")
@@ -113,6 +130,7 @@ plt.show()
 
 # - Features de impacto negativo
 
+# Graficar el efecto de las siguientes columnas
 plt.figure(figsize=(15,7))
 
 sns.lineplot(data=df0_normalized, x="quality",y="residual_sugar",label="Residual sugar")
